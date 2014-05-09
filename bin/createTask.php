@@ -1,6 +1,7 @@
 <?php
 
 require '../easyspider.php';
+require '../lib/Spyc.php';
 require EP_LIB_PATH.'view.php';
 
 $configFile = $argv[1];
@@ -9,8 +10,7 @@ if(!file_exists($configFile)){
     exit;
 }
 
-$taskConfig = yaml_parse_file($configFile);
-
+$taskConfig = Spyc::YAMLLoad($configFile);
 $taskName = $taskConfig['taskName'];
 $domain = $taskConfig['domain'];
 $charset = $taskConfig['charset'];

@@ -10,10 +10,10 @@ define('EP_UPDATE_MODE', false);
 define('EP_LOAD_THUMB', true);
 //define('EP_LOAD_THUMB', false);
 
-define('EP_TASK_NAME', 'jb51');
-require_once('D:\project\easyspider/easyspider.php');
+define('EP_TASK_NAME', 'demo');
+require_once('/Users/shanhuhai/wwwroot/easyspider/easyspider.php');
 
-define('EP_FILE_PATH', EP_ROOT_PATH.'file/jb51/');
+define('EP_FILE_PATH', EP_ROOT_PATH.'file/demo/');
 define('EP_FILE_DOMAIN', 'http://upload.jquerycn.cn/');
 
 $settings = array(
