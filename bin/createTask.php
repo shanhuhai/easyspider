@@ -77,13 +77,12 @@ foreach($fields as $f){
 $fields = $tmp;
 $listConfigs = array();
 foreach($taskConfig['lists'] as $c){
-    list($urlReg, $firstUrl, $end, $originCatename, $catname, $catid) = explode('```', $c);
+    list($firstUrl, $urlReg,  $catid,$catname) = explode('```', $c);
     $listConfigs[] = array(
         'catid'=>$catid,
         'urlReg'=>$urlReg,
         'firstUrl'=>$firstUrl,
         'start'=>'1',
-        'end'=>$end,
         'updateEnd'=>$updateEnd,
         'parseCss'=>$parseCss,
         'listType'=>$listType,

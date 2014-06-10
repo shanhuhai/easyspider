@@ -6,7 +6,6 @@ abstract class SpiderList{
     private $urlReg;
     private $firstUrl;
     private $start;
-    private $end;
     private $updateEnd;
     private $listType;
     private $parseCss; //解析列表用的 css 语法
@@ -26,7 +25,6 @@ abstract class SpiderList{
         $this->catid = $config['catid'];
         $this->urlReg = $config['urlReg'];
         $this->start = $config['start'];
-        $this->end = $config['end'];
         $this->updateEnd = $config['updateEnd'];
         $this->listType = isset($config['listType']) ? $config['listType'] : 'html';
         $this->firstUrl = isset($config['firstUrl']) ? $config['firstUrl'] : '';
@@ -42,13 +40,11 @@ abstract class SpiderList{
 
         $urls = array();
 
-        $end = EP_UPDATE_MODE ? $this->updateEnd : $this->end;
-        for ($page = $this->start; $page <= $end; $page++) {
-
+        $page = $this->start;
+        while(true){
             $nowUrl = ($this->firstUrl && $page == $this->start)
                 ? $this->domain.$this->firstUrl
-                : str_replace('{d}', $page - $this->dislocation, $this->urlReg);
-
+                : $this->nextPageUrl($page);
             $fileName = 'li_' . url2fileName( $nowUrl ) . '.html';
             $content = fetchUrl($nowUrl,
                 EP_ROOT_PATH.'cache/html/'.EP_TASK_NAME.'/'.$fileName,
@@ -59,9 +55,16 @@ abstract class SpiderList{
             } elseif($this->listType == 'json') {
                 $urls = array_merge($urls, $this->handleJson($content));
             }
-
-
             echo("list ".$this->catid." page $page fetched.\n");
+
+            $page++;
+            if(strpos($content, $this->nextPageUrl($page)) === false) {
+                break;
+            }
+
+            if(EP_UPDATE_MODE && $page>$this->updateEnd){
+                break;
+            }
 
             if(EP_DEBUG_MODE) {
                 $urls = array_values(array_unique($urls)); //去重
@@ -78,8 +81,8 @@ abstract class SpiderList{
                 writeCache($listName, $urls, EP_CACHE_PATH.'taskdata/'.EP_TASK_NAME.'/');
                 exit;
             }
-        }
 
+        }
         $urls = array_values(array_unique($urls)); //去重
         if($this->taskConfig['reverseList']) {
             $urls = array_reverse($urls); //反转
@@ -87,6 +90,10 @@ abstract class SpiderList{
 
         writeCache($listName, $urls, EP_CACHE_PATH.'taskdata/'.EP_TASK_NAME.'/');
         echo("list " .$this->catid ." done.\n");
+    }
+
+    private function nextPageUrl($page){
+        return str_replace('{d}', $page - $this->dislocation, $this->urlReg);
     }
 
     private function handleHtml($content){

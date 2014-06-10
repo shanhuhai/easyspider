@@ -12,6 +12,9 @@ $i = 0;
 $busiName = '';
 $list = array();
 $taskName = '';
+$firstUrl = '';
+$urlReg = '';
+$url = '';
 foreach($lines as &$l){
     $l = trim($l);
     if(empty($l)){
@@ -19,12 +22,13 @@ foreach($lines as &$l){
     }
 
     if($i<1){
-        $taskName = $l;
+        list($taskName,$firstUrl, $urlReg) = explode('|',$l);
+
         $str = "";
         $yaml .= $str."categorys:\n";
     } else {
         $yaml .= '- '.trim($l)."\n";
-        $list[] = "- xx```xx```xx```{$l}```{$l}```0";
+        $list[] = "    - {$firstUrl}```{$urlReg}```0```{$l}";
     }
     $i++;
 }
